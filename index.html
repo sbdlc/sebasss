@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="author" content="Sebastián de la Cruz, Diego Hoeffer, Saúl Escamilla, Eduardo De León">
+<title>Bebés y Caricaturas Mentirosas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gluten:wght@500;700;800&family=Bungee&family=Nunito:wght@500;700;900&display=swap">
+<style>
+*{box-sizing:border-box}
+
+/* Layout: un "escenario" de pantalla completa con escenas que se cambian como actos de una obra.
+   Acto 1 = cuarto de bebé (bloques de colores). Acto 2 = tele vieja con estática. */
+:root{
+  --milk:#FFF8EE; --ink:#2B2340; --ink-soft:#5B5470;
+  --block-red:#F0605D; --block-blue:#4C8DF0; --block-yellow:#FFC93C; --block-green:#3DBE8B; --peach:#FFD3B5;
+  --tv-bg:#14111F; --tv-glass:#1F2A3A; --tv-text:#F4F1FF; --tv-pink:#FF4FA3; --tv-cyan:#2FE6E0; --tv-amber:#FFB020;
+  --f-baby:"Gluten","Comic Sans MS","Chalkboard SE",cursive;
+  --f-tv:"Bungee","Impact","Arial Black",sans-serif;
+  --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme: light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--ink);font-family:var(--f-body);overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--block-yellow);outline-offset:3px}
+
+.stage{position:relative;height:100%;width:100%}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,28px);
+  padding-block:clamp(56px,8vh,90px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  text-align:center;opacity:0;visibility:hidden;transform:scale(.97);transition:opacity .45s ease,transform .45s ease,visibility 0s .45s;overflow:hidden}
+.scene.on{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .45s ease}
+.scene > *{position:relative;z-index:1;max-width:min(1100px,100%)}
+
+/* ---------- Acto 1: cuarto de bebé ---------- */
+.nursery{background:var(--milk);color:var(--ink)}
+.nursery::before{content:"";position:absolute;inset:0;z-index:0;opacity:.55;
+  background-image:radial-gradient(circle at 20% 30%,rgba(76,141,240,.10) 0 70px,transparent 71px),
+  radial-gradient(circle at 85% 20%,rgba(255,201,60,.18) 0 90px,transparent 91px),
+  radial-gradient(circle at 75% 85%,rgba(240,96,93,.10) 0 110px,transparent 111px),
+  radial-gradient(circle at 10% 85%,rgba(61,190,139,.12) 0 80px,transparent 81px)}
+.nursery h1,.nursery h2{font-family:var(--f-baby);font-weight:800;line-height:.95;margin:0;text-wrap:balance;color:var(--ink)}
+.nursery h1{font-size:clamp(3rem,10vw,8.5rem)}
+.nursery h2{font-size:clamp(2.2rem,6.5vw,5.4rem)}
+.lead{font-size:clamp(1.15rem,2.4vw,2rem);line-height:1.35;max-width:32ch;margin:0;text-wrap:balance;font-weight:700}
+.nursery .lead{color:var(--ink-soft)}
+.kicker{font-size:clamp(.8rem,1.3vw,1rem);letter-spacing:.14em;text-transform:uppercase;font-weight:900}
+.nursery .kicker{color:var(--block-blue)}
+
+.blocks{display:flex;gap:clamp(6px,1.2vw,16px);justify-content:center;flex-wrap:wrap;perspective:600px}
+.block{--c:var(--block-red);width:clamp(54px,9vw,108px);aspect-ratio:1;max-width:100%;display:grid;place-items:center;border-radius:14px;
+  background:var(--c);color:#fff;font-family:var(--f-baby);font-weight:800;font-size:clamp(2rem,5.5vw,4.4rem);
+  box-shadow:inset -8px -8px 0 rgba(0,0,0,.14),0 10px 0 rgba(43,35,64,.12);text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.scene.on .block{animation:drop .7s cubic-bezier(.3,1.6,.5,1) both}
+.block:nth-child(2){--c:var(--block-blue);animation-delay:.08s!important}
+.block:nth-child(3){--c:var(--block-yellow);color:var(--ink);animation-delay:.16s!important}
+.block:nth-child(4){--c:var(--block-green);animation-delay:.24s!important}
+.block:nth-child(5){--c:var(--block-red);animation-delay:.32s!important}
+.block:nth-child(6){--c:var(--block-blue);animation-delay:.40s!important}
+@keyframes drop{from{transform:translateY(-60vh) rotate(-25deg)}to{transform:none}}
+
+.baby{width:clamp(150px,22vw,260px);height:auto;max-width:100%}
+.scene.on .baby{animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(2deg)}}
+
+.speaker{position:absolute!important;top:max(14px,env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));z-index:2;
+  font-weight:900;font-size:.85rem;letter-spacing:.06em;padding:6px 12px;border-radius:999px;text-transform:uppercase}
+.nursery .speaker{background:var(--ink);color:var(--milk)}
+.tv .speaker{background:var(--tv-pink);color:var(--tv-bg)}
+
+.bubble{background:#fff;border:4px solid var(--ink);border-radius:32px;padding:clamp(16px,3vw,32px) clamp(20px,4vw,44px);position:relative;
+  font-family:var(--f-baby);font-weight:700;font-size:clamp(1.5rem,3.8vw,3.2rem);line-height:1.15;max-width:22ch;text-wrap:balance;box-shadow:8px 8px 0 var(--block-yellow)}
+.bubble::after{content:"";position:absolute;bottom:-26px;left:18%;border:14px solid transparent;border-top:18px solid var(--ink)}
+
+.row{display:flex;gap:clamp(12px,2.5vw,32px);flex-wrap:wrap;justify-content:center;align-items:stretch;width:100%}
+.card{flex:1 1 220px;min-width:0;max-width:340px;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:clamp(14px,2.2vw,26px);
+  display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:6px 6px 0 var(--ink)}
+.card .big{font-size:clamp(2.6rem,6vw,4.4rem);line-height:1}
+.card b{font-family:var(--f-baby);font-size:clamp(1.25rem,2.6vw,2rem);line-height:1.05}
+.card span{font-size:clamp(.95rem,1.6vw,1.2rem);color:var(--ink-soft);font-weight:700;line-height:1.3}
+
+.mega{font-family:var(--f-baby);font-weight:800;font-size:clamp(3.4rem,12vw,10rem);line-height:.9;margin:0;color:var(--block-red);text-shadow:6px 6px 0 var(--block-yellow)}
+.scene.on .pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+
+.answer{display:flex;gap:clamp(14px,3vw,40px);flex-wrap:wrap;justify-content:center}
+.yesno{min-width:0;flex:1 1 240px;max-width:380px;border-radius:28px;padding:clamp(16px,2.6vw,30px);color:#fff;display:flex;flex-direction:column;gap:4px;align-items:center;
+  box-shadow:inset -10px -10px 0 rgba(0,0,0,.14)}
+.yesno .w{font-family:var(--f-baby);font-weight:800;font-size:clamp(3rem,8vw,6.5rem);line-height:1}
+.yesno .m{font-weight:900;font-size:clamp(1.1rem,2.2vw,1.7rem);letter-spacing:.06em}
+.yes{background:var(--block-green)} .no{background:var(--block-red)}
+
+/* Timer */
+.timer{display:flex;flex-direction:column;align-items:center;gap:10px}
+.ring{position:relative;width:clamp(130px,18vw,200px);aspect-ratio:1;max-width:100%}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{fill:none;stroke:rgba(43,35,64,.12);stroke-width:10}
+.ring .prog{fill:none;stroke:var(--block-blue);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .25s linear}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-baby);font-weight:800;font-size:clamp(2.4rem,5vw,3.8rem);font-variant-numeric:tabular-nums}
+.timer.done .prog{stroke:var(--block-red)}
+.timer.done .num{color:var(--block-red)}
+.tbtns{display:flex;gap:10px}
+.btn{border:3px solid var(--ink);background:var(--block-yellow);color:var(--ink);border-radius:999px;padding:8px 20px;font-weight:900;font-size:1rem;box-shadow:3px 3px 0 var(--ink)}
+.btn.ghost{background:#fff}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2.5vw,30px);width:100%}
+@media (max-width:640px){.compare{grid-template-columns:1fr}}
+.side{min-width:0;border-radius:26px;padding:clamp(14px,2.4vw,28px);display:flex;flex-direction:column;align-items:center;gap:10px;border:3px solid var(--ink)}
+.side.screen{background:#E8E6F0}
+.side.person{background:#FFF0D9}
+.side h3{margin:0;font-family:var(--f-baby);font-size:clamp(1.4rem,3vw,2.3rem)}
+.side p{margin:0;font-weight:700;font-size:clamp(1rem,1.8vw,1.35rem);line-height:1.35;color:var(--ink-soft);text-wrap:balance}
+.side .art{font-size:clamp(2.6rem,6vw,4.6rem);line-height:1}
+.tag{display:inline-block;font-weight:900;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--ink);color:#fff}
+
+.step{opacity:0;transform:translateY(16px);transition:opacity .4s ease,transform .4s ease}
+.step.show{opacity:1;transform:none}
+
+/* ---------- Acto 2: tele ---------- */
+.tv{background:var(--tv-bg);color:var(--tv-text)}
+.tv canvas.static{position:absolute;inset:0;width:100%;height:100%;max-width:none!important;z-index:0;opacity:.13;image-rendering:pixelated}
+.tv::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px)}
+.tv h1,.tv h2{font-family:var(--f-tv);font-weight:400;margin:0;line-height:.95;text-wrap:balance;letter-spacing:.01em}
+.tv h1{font-size:clamp(2.6rem,8.5vw,7.4rem)}
+.tv h2{font-size:clamp(1.9rem,5vw,4.2rem)}
+.tv .kicker{color:var(--tv-cyan)}
+.tv .lead{color:#CFC8E6}
+.glitch{position:relative;color:var(--tv-text);text-shadow:3px 0 var(--tv-pink),-3px 0 var(--tv-cyan)}
+.scene.on .glitch{animation:jit 2.8s steps(1) infinite}
+@keyframes jit{0%,92%,100%{transform:none}93%{transform:translate(-4px,2px) skewX(-6deg)}95%{transform:translate(5px,-2px)}97%{transform:translate(-2px,0) skewX(4deg)}}
+
+.set{width:clamp(220px,34vw,420px);max-width:100%;position:relative}
+.set .box{background:#C9733A;border-radius:28px;padding:16px 16px 22px;box-shadow:inset -10px -12px 0 rgba(0,0,0,.25),0 14px 0 rgba(0,0,0,.35);display:grid;grid-template-columns:1fr auto;gap:12px}
+.set .glass{background:var(--tv-glass);border-radius:22px/30px;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;position:relative;box-shadow:inset 0 0 30px rgba(0,0,0,.7)}
+.set .glass canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+.set .glass b{position:relative;font-family:var(--f-tv);font-size:clamp(1rem,2.4vw,1.7rem);color:var(--tv-amber);text-shadow:0 0 12px rgba(255,176,32,.7)}
+.set .knobs{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+.set .knobs i{display:block;width:clamp(18px,2.6vw,30px);aspect-ratio:1;border-radius:50%;background:#3A2A22;box-shadow:inset -3px -3px 0 rgba(0,0,0,.4)}
+.set .ant{position:absolute;left:50%;top:-58px;width:120px;height:60px;transform:translateX(-50%)}
+
+.story{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.18);border-radius:22px;padding:clamp(16px,3vw,34px);
+  font-size:clamp(1.15rem,2.6vw,2.1rem);line-height:1.45;font-weight:700;max-width:42ch;text-align:left}
+.story .fight{transition:background .5s,color .5s;border-radius:6px;padding:0 3px}
+.story .moral{transition:background .5s,color .5s;border-radius:6px;padding:0 3px}
+.scene.mark .story .fight{background:rgba(255,79,163,.28);color:#FFD6EA}
+.scene.mark .story .moral{background:rgba(47,230,224,.25);color:#D4FFFD}
+.meter{width:min(820px,100%);display:flex;flex-direction:column;gap:8px}
+.bar{display:flex;height:clamp(26px,4vh,40px);border-radius:999px;overflow:hidden;border:2px solid rgba(255,255,255,.3)}
+.bar .f{background:var(--tv-pink);width:0;transition:width 1s ease}
+.bar .m{background:var(--tv-cyan);width:0;transition:width 1s ease .2s}
+.legend{display:flex;justify-content:space-between;gap:12px;font-weight:900;font-size:clamp(.9rem,1.6vw,1.15rem);flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.legend .lf{color:var(--tv-pink)} .legend .lm{color:var(--tv-cyan)}
+
+.chain{display:flex;align-items:center;justify-content:center;gap:clamp(4px,1vw,12px);flex-wrap:nowrap;width:min(980px,100%)}
+.head{flex:0 1 74px;min-width:0;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:clamp(1.3rem,3.4vw,2.6rem);background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25)}
+.wave{flex:0 1 34px;min-width:0;height:4px;border-radius:3px;background:var(--tv-cyan)}
+.chain .wave:nth-of-type(n+3){background:var(--tv-amber)}
+.chain .wave:nth-of-type(n+5){background:var(--tv-pink)}
+.ends{display:flex;justify-content:space-between;gap:16px;width:min(980px,100%);flex-wrap:wrap}
+.say{font-weight:900;font-size:clamp(.95rem,1.8vw,1.3rem);padding:10px 16px;border-radius:16px;max-width:100%}
+.say.a{background:var(--tv-cyan);color:var(--tv-bg)}
+.say.b{background:var(--tv-pink);color:var(--tv-bg)}
+
+.tvcards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2vw,22px);width:100%}
+@media (max-width:760px){.tvcards{grid-template-columns:1fr}}
+.tvcard{min-width:0;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.2);border-radius:20px;padding:clamp(14px,2vw,24px);text-align:left;display:flex;flex-direction:column;gap:8px}
+.tvcard .n{font-family:var(--f-tv);font-size:clamp(1.6rem,3vw,2.4rem);color:var(--tv-amber);line-height:1}
+.tvcard p{margin:0;font-weight:700;font-size:clamp(1rem,1.7vw,1.3rem);line-height:1.35;color:#E6E0F7}
+.stamp{font-family:var(--f-tv);font-size:clamp(1.6rem,5vw,3.6rem);color:var(--tv-pink);border:5px solid var(--tv-pink);padding:6px 18px;border-radius:12px;transform:rotate(-4deg);display:inline-block}
+.tv .btn{border-color:var(--tv-text);background:var(--tv-amber);color:var(--tv-bg);box-shadow:3px 3px 0 var(--tv-pink)}
+.tv .btn.ghost{background:transparent;color:var(--tv-text)}
+.tv .ring .track{stroke:rgba(255,255,255,.15)}
+.tv .ring .prog{stroke:var(--tv-cyan)}
+.tv .ring .num{color:var(--tv-text)}
+
+/* Portada / cierre */
+.cover{background:linear-gradient(90deg,var(--milk) 0 50%,var(--tv-bg) 50% 100%)}
+.cover .halves{display:grid;grid-template-columns:1fr 1fr;width:min(1100px,100%);align-items:center;gap:20px}
+.cover .l{color:var(--ink);font-family:var(--f-baby);font-weight:800;font-size:clamp(2rem,6.4vw,5.6rem);line-height:.92;text-align:right;text-wrap:balance}
+.cover .r{color:var(--tv-text);font-family:var(--f-tv);font-size:clamp(1.6rem,5vw,4.4rem);line-height:.95;text-align:left;text-shadow:3px 0 var(--tv-pink),-3px 0 var(--tv-cyan);text-wrap:balance}
+.cover .amp{grid-column:1/-1;justify-self:center;font-family:var(--f-baby);font-size:clamp(2.4rem,6vw,4.6rem);background:var(--block-yellow);color:var(--ink);width:1.5em;height:1.5em;border-radius:50%;display:grid;place-items:center;margin-block:-8px;box-shadow:0 0 0 6px var(--ink)}
+.team{display:grid;grid-template-columns:repeat(4,auto);gap:8px 14px;justify-content:center;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:18px;padding:12px 18px;font-weight:800;font-size:clamp(.85rem,1.5vw,1.05rem)}
+@media (max-width:760px){.team{grid-template-columns:repeat(2,auto)}.cover .halves{grid-template-columns:1fr}.cover .l,.cover .r{text-align:center}.cover{background:linear-gradient(180deg,var(--milk) 0 50%,var(--tv-bg) 50% 100%)}}
+.team small{display:block;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+.biblio{text-align:left;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:clamp(14px,2.4vw,28px);max-width:900px;width:100%;overflow:auto;max-height:52vh}
+.biblio ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px}
+.biblio li{font-size:clamp(.82rem,1.3vw,1rem);line-height:1.45;color:var(--ink)}
+
+/* HUD */
+.hud{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  pointer-events:none}
+.hud > *{pointer-events:auto}
+.dots{display:flex;gap:6px;flex:1;min-width:0;align-items:center;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:50%;border:none;padding:0;background:rgba(128,120,150,.45)}
+.dot.a2{border-radius:2px}
+.dot.cur{background:var(--block-yellow);transform:scale(1.35)}
+.dot.sep{width:2px;height:14px;border-radius:0;background:rgba(128,120,150,.45);margin-inline:4px}
+.clock{font-weight:900;font-variant-numeric:tabular-nums;font-size:.95rem;padding:6px 12px;border-radius:999px;background:rgba(20,17,31,.78);color:#fff;border:none}
+.clock.warn{background:var(--block-yellow);color:var(--ink)}
+.clock.over{background:var(--block-red);color:#fff}
+.navb{border:none;border-radius:999px;width:38px;height:38px;background:rgba(20,17,31,.78);color:#fff;font-size:1.1rem;font-weight:900}
+.hint{position:fixed;top:max(14px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));z-index:20;font-size:.78rem;font-weight:800;
+  background:rgba(20,17,31,.7);color:#fff;padding:6px 10px;border-radius:10px;transition:opacity .6s}
+.hint.gone{opacity:0;pointer-events:none}
+.editbar{display:flex;gap:8px}
+.ebtn{border:none;border-radius:999px;height:38px;padding:0 14px;background:rgba(20,17,31,.78);color:#fff;font-weight:900;font-size:.9rem}
+.ebtn.save{background:var(--block-green)}
+.ebtn.cancel{background:var(--block-red)}
+body.editing .step{opacity:1!important;transform:none!important}
+body.editing [data-k]{outline:2px dashed var(--block-blue);outline-offset:4px;cursor:text;border-radius:6px}
+body.editing [data-k]:focus{outline:3px solid var(--block-yellow);background:rgba(255,201,60,.12)}
+body.editing .scene.on *{animation:none!important}
+.toast{position:fixed;left:50%;bottom:calc(64px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;background:var(--ink);color:#fff;font-weight:800;
+  padding:10px 16px;border-radius:12px;max-width:calc(100% - 32px);text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- 0 Portada -->
+  <section class="scene cover on" data-act="0">
+    <div class="halves">
+      <div class="l">Lenguaje de bebés</div>
+      <div class="r">Caricaturas mentirosas</div>
+      <div class="amp">&amp;</div>
+    </div>
+    <div class="team">
+      <div>Sebastián de la Cruz<small>655942</small></div>
+      <div>Diego Hoeffer Garza<small>627950</small></div>
+      <div>Saúl Escamilla<small>655135</small></div>
+      <div>Eduardo De León<small>672736</small></div>
+    </div>
+  </section>
+
+  <!-- ACTO 1 -->
+  <section class="scene nursery" data-act="1">
+    <div class="kicker">Actividad 1 · Charadas de bebé</div>
+    <div class="blocks" aria-hidden="true"><div class="block">B</div><div class="block">E</div><div class="block">B</div><div class="block">É</div><div class="block">S</div></div>
+    <h1>Lenguaje de bebés</h1>
+  </section>
+
+  <section class="scene nursery" data-act="1" data-steps="1">
+    <div class="speaker">Habla: Sebastián</div>
+    <svg class="baby" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="108" r="74" fill="#FFD3B5" stroke="#2B2340" stroke-width="5"/>
+      <path d="M92 36 q10-20 22 -4 q-12 -2 -10 14" fill="none" stroke="#2B2340" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="30" cy="110" r="14" fill="#FFD3B5" stroke="#2B2340" stroke-width="5"/>
+      <circle cx="170" cy="110" r="14" fill="#FFD3B5" stroke="#2B2340" stroke-width="5"/>
+      <circle cx="74" cy="98" r="8" fill="#2B2340"/><circle cx="126" cy="98" r="8" fill="#2B2340"/>
+      <circle cx="77" cy="95" r="2.5" fill="#fff"/><circle cx="129" cy="95" r="2.5" fill="#fff"/>
+      <ellipse cx="58" cy="124" rx="12" ry="8" fill="#F0605D" opacity=".35"/><ellipse cx="142" cy="124" rx="12" ry="8" fill="#F0605D" opacity=".35"/>
+      <rect x="78" y="128" width="44" height="24" rx="12" fill="#4C8DF0" stroke="#2B2340" stroke-width="5"/>
+      <circle cx="100" cy="140" r="7" fill="#FFC93C" stroke="#2B2340" stroke-width="4"/>
+    </svg>
+    <div class="bubble">Los bebés todavía no saben hablar…</div>
+    <p class="lead step" data-step="1">…pero sí se quieren comunicar. <br>¿Ustedes los van a entender?</p>
+  </section>
+
+  <section class="scene nursery" data-act="1" data-steps="1">
+    <div class="speaker">Habla: Sebastián</div>
+    <div class="kicker">Antes de empezar</div>
+    <p class="mega pulse">¡Necesitamos<br>un voluntario!</p>
+    <div class="row step" data-step="1">
+      <div class="card"><div class="big">👶</div><b>1 voluntario</b><span>Pasa al frente y se vuelve el bebé</span></div>
+      <div class="card"><div class="big">🧩</div><b>4 equipos</b><span>El salón se divide en 4 partes</span></div>
+      <div class="card"><div class="big">⏱️</div><b>1 minuto</b><span>Para que el bebé actúe la palabra</span></div>
+    </div>
+  </section>
+
+  <section class="scene nursery" data-act="1">
+    <div class="speaker">Habla: Diego</div>
+    <div class="kicker">Ronda 1</div>
+    <h2>Shhh… solo miren 🤫</h2>
+    <div class="row">
+      <div class="card"><div class="big">🙊</div><b>Nadie habla</b><span>Ni pistas, ni preguntas</span></div>
+      <div class="card"><div class="big">👀</div><b>Solo observen</b><span>El bebé actúa una palabra</span></div>
+      <div class="card"><div class="big">☝️</div><b>Una oportunidad</b><span>Al final, cada equipo adivina una sola vez</span></div>
+    </div>
+    <div class="timer" data-secs="60">
+      <div class="ring"><svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="prog" cx="60" cy="60" r="52"/></svg><div class="num">1:00</div></div>
+      <div class="tbtns"><button class="btn t-start" type="button">Iniciar</button><button class="btn ghost t-reset" type="button">Reiniciar</button></div>
+    </div>
+  </section>
+
+  <section class="scene nursery" data-act="1" data-steps="1">
+    <div class="speaker">Habla: Lalo</div>
+    <div class="kicker">Ronda 2 · Cambia la regla</div>
+    <h2>Ahora sí le pueden preguntar al bebé</h2>
+    <div class="answer">
+      <div class="yesno yes"><span class="w">GUGU</span><span class="m">= SÍ 👍</span></div>
+      <div class="yesno no"><span class="w">GAGA</span><span class="m">= NO 👎</span></div>
+    </div>
+    <div class="timer step" data-step="1" data-secs="60">
+      <div class="ring"><svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="prog" cx="60" cy="60" r="52"/></svg><div class="num">1:00</div></div>
+      <div class="tbtns"><button class="btn t-start" type="button">Iniciar</button><button class="btn ghost t-reset" type="button">Reiniciar</button></div>
+    </div>
+  </section>
+
+  <section class="scene nursery" data-act="1" data-steps="2">
+    <div class="speaker">Habla: Saúl</div>
+    <h2>¿En qué ronda fue más fácil?</h2>
+    <div class="compare">
+      <div class="side screen step" data-step="1">
+        <span class="tag">Ronda 1</span>
+        <div class="art">📺</div>
+        <h3>Como dejarlo con la tele</h3>
+        <p>El bebé se comunica, pero la pantalla no le contesta.</p>
+      </div>
+      <div class="side person step" data-step="2">
+        <span class="tag">Ronda 2</span>
+        <div class="art">👩‍🍼</div>
+        <h3>Como un adulto que responde</h3>
+        <p>Cada vez que balbucea, alguien le contesta y le dice el nombre de lo que está viendo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene nursery" data-act="1">
+    <div class="speaker">Habla: Saúl</div>
+    <div class="blocks" aria-hidden="true"><div class="block">🗣️</div><div class="block">💬</div><div class="block">❤️</div></div>
+    <h2>Los bebés aprenden a hablar con <span style="color:var(--block-green)">personas</span>,<br>no con <span style="color:var(--block-red)">pantallas</span>.</h2>
+  </section>
+
+  <!-- ACTO 2 -->
+  <section class="scene tv" data-act="2">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="set" aria-hidden="true">
+      <svg class="ant" viewBox="0 0 120 60"><line x1="60" y1="58" x2="18" y2="4" stroke="#B9B2CF" stroke-width="4" stroke-linecap="round"/><line x1="60" y1="58" x2="102" y2="4" stroke="#B9B2CF" stroke-width="4" stroke-linecap="round"/><circle cx="18" cy="4" r="4" fill="#FF4FA3"/><circle cx="102" cy="4" r="4" fill="#2FE6E0"/></svg>
+      <div class="box"><div class="glass"><canvas></canvas><b>CANAL 2</b></div><div class="knobs"><i></i><i></i><i></i></div></div>
+    </div>
+    <div class="kicker">Actividad 2 · Teléfono descompuesto</div>
+    <h1 class="glitch">Caricaturas mentirosas</h1>
+  </section>
+
+  <section class="scene tv" data-act="2" data-steps="1">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="speaker">Habla: Sebastián</div>
+    <div class="kicker">Hoy en tu caricatura educativa favorita…</div>
+    <h2>Una historia para aprender a ser buenos amigos 🤝</h2>
+    <p class="lead step" data-step="1">Pero se las vamos a pasar como <b style="color:var(--tv-amber)">teléfono descompuesto</b>.<br>A ver qué es lo que <i>realmente</i> se aprende.</p>
+  </section>
+
+  <section class="scene tv" data-act="2" data-steps="1">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="speaker">Habla: Saúl</div>
+    <div class="kicker">Reglas</div>
+    <div class="chain" aria-hidden="true">
+      <div class="head">🗣️</div><div class="wave"></div><div class="head">👂</div><div class="wave"></div><div class="head">👂</div><div class="wave"></div><div class="head">👂</div><div class="wave"></div><div class="head">👂</div><div class="wave"></div><div class="head">🤔</div>
+    </div>
+    <div class="tvcards">
+      <div class="tvcard"><span class="n">01</span><p>Quédense en sus lugares. Usamos las filas como están.</p></div>
+      <div class="tvcard"><span class="n">02</span><p>Le contamos la historia al primero de cada fila, todos al mismo tiempo.</p></div>
+      <div class="tvcard"><span class="n">03</span><p>Pásenla al oído hasta el último. ¡Gana la fila que termine primero!</p></div>
+    </div>
+    <div class="timer step" data-step="1" data-secs="90">
+      <div class="ring"><svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="prog" cx="60" cy="60" r="52"/></svg><div class="num">1:30</div></div>
+      <div class="tbtns"><button class="btn t-start" type="button">Iniciar</button><button class="btn ghost t-reset" type="button">Reiniciar</button></div>
+    </div>
+  </section>
+
+  <section class="scene tv" data-act="2" data-steps="2">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="speaker">Habla: Diego</div>
+    <h2>Último de cada fila:<br><span style="color:var(--tv-amber)">¿qué les llegó?</span> 🎤</h2>
+    <div class="ends step" data-step="1">
+      <span class="say a">¿Llegó la moraleja? 🤝</span>
+      <span class="say b">¿…o llegó el pleito? 😡</span>
+    </div>
+    <p class="lead step" data-step="2">Ahora sí… la historia original 👇</p>
+  </section>
+
+  <section class="scene tv" data-act="2" data-steps="2" data-mark="1">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="speaker">Habla: Diego</div>
+    <div class="kicker">La historia original</div>
+    <div class="story" id="story">
+      <span class="fight">Pepe le quitó la pelota a Lalo, le gritó que era un llorón, que ya no lo juntaba y que nadie lo quería en su equipo. Lalo se enojó y le dijo que nunca más le iba a hablar.</span>
+      <span class="moral">Al final, los dos aprendieron que hay que compartir y ser amigos.</span>
+    </div>
+    <div class="meter step" data-step="2">
+      <div class="bar"><div class="f"></div><div class="m"></div></div>
+      <div class="legend"><span class="lf" id="lf">Pleito</span><span class="lm" id="lm">Moraleja</span></div>
+    </div>
+  </section>
+
+  <section class="scene tv" data-act="2" data-steps="3">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="speaker">Habla: Lalo</div>
+    <div class="kicker">¿Qué se perdió?</div>
+    <div class="stamp">¡La moraleja!</div>
+    <div class="tvcards">
+      <div class="tvcard step" data-step="1"><span class="n">📺</span><p>Casi todo el capítulo es la pelea. La lección sale poquito y al final.</p></div>
+      <div class="tvcard step" data-step="2"><span class="n">🧠</span><p>Un niño chiquito todavía no conecta el final con el principio, así que copia el pleito.</p></div>
+      <div class="tvcard step" data-step="3"><span class="n">😤</span><p>Por eso algunos niños se vuelven más mandones o dejan fuera a otros.</p></div>
+    </div>
+  </section>
+
+  <section class="scene tv" data-act="2" data-steps="1">
+    <canvas class="static" aria-hidden="true"></canvas>
+    <div class="speaker">Habla: Lalo</div>
+    <h2 class="glitch">¿Por qué “mentirosas”?</h2>
+    <p class="lead">Prometen enseñar algo bueno… y terminan enseñando lo contrario.</p>
+    <div class="row step" data-step="1" style="max-width:760px">
+      <div class="card" style="max-width:none;background:var(--tv-amber)"><div class="big">👨‍👧</div><b>Lo que ayuda</b><span style="color:var(--ink)">Que un adulto vea la caricatura con el niño y le explique qué estuvo mal.</span></div>
+    </div>
+  </section>
+
+  <!-- Cierre -->
+  <section class="scene nursery" data-act="3">
+    <div class="blocks" aria-hidden="true"><div class="block">G</div><div class="block">U</div><div class="block">G</div><div class="block">U</div></div>
+    <h1>¡Gracias!</h1>
+    <p class="lead">¿Preguntas? 👶📺</p>
+  </section>
+</div>
+
+<div class="hint" id="hint">→ / espacio: avanzar · ← regresar · F: pantalla completa</div>
+<div class="hud">
+  <button class="navb" id="prev" type="button" aria-label="Anterior">‹</button>
+  <div class="dots" id="dots"></div>
+  <div class="editbar">
+    <button class="ebtn" id="editBtn" type="button" hidden>✏️ Editar textos</button>
+    <button class="ebtn save" id="saveBtn" type="button" hidden>Guardar</button>
+    <button class="ebtn cancel" id="cancelBtn" type="button" hidden>Cancelar</button>
+  </div>
+  <button class="clock" id="clock" type="button" title="Tiempo total (meta 11–13 min). Clic para reiniciar">0:00</button>
+  <button class="navb" id="next" type="button" aria-label="Siguiente">›</button>
+</div>
+
+<script>
+(function(){
+  const scenes=[...document.querySelectorAll('.scene')];
+  let i=0, step=0;
+  const dots=document.getElementById('dots');
+  let lastAct=null;
+  scenes.forEach((s,k)=>{
+    const act=s.dataset.act;
+    if(lastAct!==null && act!==lastAct){const sep=document.createElement('span');sep.className='dot sep';dots.appendChild(sep);}
+    lastAct=act;
+    const d=document.createElement('button');d.type='button';d.className='dot'+(act==='2'?' a2':'');d.setAttribute('aria-label','Escena '+(k+1));
+    d.onclick=()=>go(k,0);dots.appendChild(d);
+  });
+  const dotEls=[...dots.querySelectorAll('.dot:not(.sep)')];
+
+  // ---------- textos editables ----------
+  const EDITABLE='.speaker,.kicker,h1,h2,h3,.lead,.bubble,.mega,.card b,.card span,.tag,.yesno .w,.yesno .m,.tvcard p,.say,.stamp,.story .fight,.story .moral,.cover .l,.cover .r,.team > div,.block';
+  scenes.forEach((s,si)=>{let n=0;s.querySelectorAll(EDITABLE).forEach(el=>{if(el.closest('[data-k]'))return;el.dataset.k='s'+si+'-'+(n++);});});
+  const editEls=[...document.querySelectorAll('[data-k]')];
+  const ALLOWED={BR:1,B:1,I:1,SPAN:1,SMALL:1,STRONG:1,EM:1};
+  function clean(html){
+    const doc=new DOMParser().parseFromString('<div>'+html+'</div>','text/html');
+    (function walk(node){[...node.childNodes].forEach(c=>{
+      if(c.nodeType===1){
+        if(!ALLOWED[c.tagName]){c.replaceWith(document.createTextNode(c.textContent));return;}
+        const col=c.style&&c.style.color;[...c.attributes].forEach(a=>c.removeAttribute(a.name));
+        if(col&&/^var\(--[a-z-]+\)$|^#[0-9a-f]{3,8}$|^rgb/i.test(col))c.style.color=col;
+        walk(c);
+      }else if(c.nodeType!==3){c.remove();}
+    });})(doc.body.firstChild);
+    return doc.body.firstChild.innerHTML;
+  }
+  let content={};
+  function applyContent(){editEls.forEach(el=>{if(typeof content[el.dataset.k]==='string')el.innerHTML=clean(content[el.dataset.k]);});countWords();}
+
+  // conteo de palabras de la historia
+  let fp=76,mp=24;
+  function countWords(){
+    const fw=document.querySelector('#story .fight').textContent.trim().split(/\s+/).filter(Boolean).length;
+    const mw=document.querySelector('#story .moral').textContent.trim().split(/\s+/).filter(Boolean).length;
+    const tot=Math.max(1,fw+mw);fp=Math.round(fw/tot*100);mp=100-fp;
+    document.getElementById('lf').textContent=`Pleito: ${fw} palabras (${fp}%)`;
+    document.getElementById('lm').textContent=`Moraleja: ${mw} palabras (${mp}%)`;
+  }
+  countWords();
+
+  function render(){
+    scenes.forEach((s,k)=>s.classList.toggle('on',k===i));
+    const s=scenes[i];
+    s.querySelectorAll('.step').forEach(el=>el.classList.toggle('show',+el.dataset.step<=step));
+    if(s.dataset.mark){
+      s.classList.toggle('mark',step>=1);
+      const f=s.querySelector('.bar .f'),m=s.querySelector('.bar .m');
+      f.style.width=step>=2?fp+'%':'0';m.style.width=step>=2?mp+'%':'0';
+    }
+    dotEls.forEach((d,k)=>d.classList.toggle('cur',k===i));
+    try{sessionStorage.setItem('bcm-scene',String(i));}catch(e){}
+  }
+  function go(n,st){i=Math.max(0,Math.min(scenes.length-1,n));step=st;render();startClock();}
+  function next(){const max=+(scenes[i].dataset.steps||0);if(step<max){step++;render();}else if(i<scenes.length-1){go(i+1,0);}startClock();}
+  function prev(){if(step>0){step--;render();}else if(i>0){go(i-1,+(scenes[i-1].dataset.steps||0));}}
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  document.addEventListener('keydown',e=>{
+    if(e.target.isContentEditable){if(e.key==='Escape')e.target.blur();return;}
+    if(e.target.closest&&e.target.closest('button')&&(e.key===' '||e.key==='Enter'))return;
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='f'||e.key==='F'){fs();}
+    hideHint();
+  });
+  document.getElementById('stage').addEventListener('click',e=>{
+    if(e.target.closest('button')||editing)return;
+    (e.clientX>window.innerWidth*0.3?next:prev)();hideHint();
+  });
+  function fs(){try{if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen();}catch(e){}}
+  const hint=document.getElementById('hint');let hintT=setTimeout(hideHint,7000);
+  function hideHint(){hint.classList.add('gone');clearTimeout(hintT);}
+
+  // reloj total de la exposición (meta 12 min, tolerancia 11–13)
+  const clock=document.getElementById('clock');let t0=null,tick=null;
+  function startClock(){if(t0||i===0)return;t0=Date.now();tick=setInterval(upd,500);}
+  function upd(){const s=Math.floor((Date.now()-t0)/1000);clock.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    clock.classList.toggle('warn',s>=600&&s<720);clock.classList.toggle('over',s>=780);}
+  clock.onclick=()=>{clearInterval(tick);t0=null;clock.textContent='0:00';clock.className='clock';};
+
+  // timers de las rondas
+  const C=2*Math.PI*52;
+  document.querySelectorAll('.timer').forEach(tm=>{
+    const total=+tm.dataset.secs, prog=tm.querySelector('.prog'), num=tm.querySelector('.num');
+    prog.style.strokeDasharray=C;prog.style.strokeDashoffset=0;
+    let left=total,iv=null;
+    const show=()=>{num.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');prog.style.strokeDashoffset=C*(1-left/total);tm.classList.toggle('done',left===0);};
+    const startB=tm.querySelector('.t-start');
+    startB.onclick=()=>{
+      if(iv){clearInterval(iv);iv=null;startB.textContent='Seguir';return;}
+      if(left===0)left=total;
+      startB.textContent='Pausa';
+      iv=setInterval(()=>{left--;show();if(left<=0){clearInterval(iv);iv=null;startB.textContent='Iniciar';beep();}},1000);
+    };
+    tm.querySelector('.t-reset').onclick=()=>{clearInterval(iv);iv=null;left=total;startB.textContent='Iniciar';show();};
+    show();
+  });
+  let ac=null;
+  function beep(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(d=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(.2,ac.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d+.2);o.start(ac.currentTime+d);o.stop(ac.currentTime+d+.22);});}catch(e){}}
+
+  // estática de tele
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cvs=[...document.querySelectorAll('.tv canvas')];
+  cvs.forEach(c=>{c.width=160;c.height=100;});
+  function noise(){
+    const cur=scenes[i];
+    cvs.forEach(c=>{
+      if(!cur.contains(c))return;
+      const x=c.getContext('2d'),img=x.createImageData(c.width,c.height),d=img.data;
+      for(let p=0;p<d.length;p+=4){const v=Math.random()*255|0;d[p]=d[p+1]=d[p+2]=v;d[p+3]=255;}
+      x.putImageData(img,0,0);
+    });
+    if(!reduce)setTimeout(()=>requestAnimationFrame(noise),70);
+  }
+  noise();
+
+  try{const saved=+sessionStorage.getItem('bcm-scene');if(saved>0&&saved<scenes.length)i=saved;}catch(e){}
+  render();
+
+  // ---------- modo edición ----------
+  let editing=false, art=null, readOnly=false;
+  const editBtn=document.getElementById('editBtn'),saveBtn=document.getElementById('saveBtn'),cancelBtn=document.getElementById('cancelBtn');
+  function toast(msg,ms){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),ms||3500);}
+  function setEditing(on){
+    editing=on;document.body.classList.toggle('editing',on);
+    editEls.forEach(el=>{if(on)el.setAttribute('contenteditable','true');else el.removeAttribute('contenteditable');});
+    editBtn.hidden=on||readOnly;saveBtn.hidden=!on;cancelBtn.hidden=!on;
+    if(on)toast('Da clic en cualquier texto para cambiarlo. Muévete entre escenas con ‹ ›. Al terminar, Guardar.',5000);
+  }
+  editBtn.onclick=()=>setEditing(true);
+  cancelBtn.onclick=()=>{setEditing(false);applyContent();editEls.forEach(el=>{if(!(el.dataset.k in content))el.innerHTML=el.dataset.orig;});render();};
+  editEls.forEach(el=>{el.dataset.orig=el.innerHTML;});
+  saveBtn.onclick=async()=>{
+    const next={};
+    editEls.forEach(el=>{const h=clean(el.innerHTML);if(h!==el.dataset.orig)next[el.dataset.k]=h;});
+    saveBtn.disabled=true;saveBtn.textContent='Guardando…';
+    try{
+      await art.publish({'content.json':{content:JSON.stringify(next,null,1),contentType:'application/json'}});
+      content=next;setEditing(false);applyContent();render();toast('Guardado. Todos los que abran el link ya ven los cambios.');
+    }catch(err){
+      const c=err&&err.code;
+      if(c==='not_writer'||c==='not_granted'||c==='consent_required'){readOnly=true;setEditing(false);toast('Esta vista es solo de lectura: pídele al dueño acceso para editar.',5000);}
+      else if(c==='conflict'){toast('Alguien más guardó cambios; recargando…');}
+      else if(c==='capability_disabled'){toast('Aquí no se puede guardar (por ejemplo, desde un link público). Ábrelo con tu cuenta.',5000);}
+      else{toast('No se pudo guardar. Intenta de nuevo en un momento.');}
+    }finally{saveBtn.disabled=false;saveBtn.textContent='Guardar';}
+  };
+})();
+</script>
+
+</body>
+</html>
